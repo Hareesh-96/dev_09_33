@@ -1,0 +1,20 @@
+pipeline {
+   agent any 
+     stages {
+	   stage {"maven build"}{
+	     steps {
+		      sh "mvn clean package"
+			}
+        }
+		 stage {"deploy-dev"}{
+	       steps {
+		      sshagent(['deploy']){
+			    sh "chmod 777 /home/demo/.jenkins -R"
+				sh "cp -rp /home/demo/.jenkinsl/workspace/test_project/target/* .jar /home/demo/output"
+				sh "scp -rp /home/demo/output/* .jar demo:13.234.240.234:/home/demo"
+				
+			}
+        }
+	}
+}
+}
